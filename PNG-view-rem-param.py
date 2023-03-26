@@ -2,43 +2,44 @@
  
 # add args
 #current version, reads all png in this directory, and dumps in ParametersRemoved
-
-import PIL
-from PIL import Image 
 import os
+from pathlib import Path
+from PIL import Image
 
-inputdir='.'
-outputdir='ParametersRemoved'
+inputdir = Path(".")
+outputdir = Path("ParametersRemoved")
 
-#make sure inpuyt exists
-if not os.path.isdir(inputdir):
-    print ('Input does not exist')
-    quit()
+# Check if input directory exists, otherwise exit
+if not inputdir.exists() or not inputdir.is_dir():
+    print("Input directory does not exist")
+    exit()
 
-#if it doesn't exist create output dir
-if not os.path.isdir(outputdir):
-    os.mkdir(outputdir)
+# Create output directory if it doesn't exist
+if not outputdir.exists() or not outputdir.is_dir():
+    outputdir.mkdir()
 
-#Get a list of all file in inputdir which is "currentDir"
-#check if that file exitss in outputdir 'ParametersRemoved'
-#if it does not exist load and save
+# Iterate over all PNG files in the input directory and process them
+for file in inputdir.glob("*.png"):
+    if not file.is_file():
+        # Skip if it's not a file
+        continue
 
-for eachfile in os.listdir(inputdir):
-    # print ('eachfile',eachfile)
-    infilename=os.path.join(inputdir,eachfile)
-    infileext=os.path.splitext(eachfile)[1].lower()
-    # print (eachfile,infileext)
-    if (os.path.isfile(infilename) and infileext == ".png"):
-        # print ('valid PNG', infilename)
-        #if it is a file continue
-        outputfilename=os.path.join(outputdir,eachfile)
-        if not (os.path.exists(outputfilename)):
-            # print("It doesn't exist",outputfilename)
-            with PIL.Image.open(infilename) as img:
-                img.load()
+    # Generate the output file path
+    outfile = outputdir / file.name
+
+    if outfile.exists():
+        # Skip if output file already exists
+        print(f"File already processed: {outfile}")
+        continue
+
+    try:
+        with Image.open(file) as img:
+            # Remove the "parameters" attribute from the PNG file
+            try:
                 img.info.pop("parameters")
-                img.save(outputfilename)
-        else:
-            print('File already processed',outputfilename)
-    else:
-        print ('invalid PNG',infilename)
+            except Exception as e:
+                print(f"Failed to pop parameters, was this already done? {e}")
+            img.save(outfile)
+            print(f"Processed file: {file} -> {outfile}")
+    except Exception as e:
+        print(f"Failed to process file: {file} -> {e}")
