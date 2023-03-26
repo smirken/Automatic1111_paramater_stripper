@@ -42,10 +42,4 @@ for eachfile in os.listdir(inputdir):
             print('File already processed',outputfilename)
     else:
         # print ('invalid PNG',infilename)
-            
-
-quit()
-with Image.open(infilename) as img:
-    img.load()
-    print(type(img))
     
