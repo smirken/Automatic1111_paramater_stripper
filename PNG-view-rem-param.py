@@ -1,10 +1,10 @@
 #!/bin/env python3
-
+ 
 # add args
 #current version, reads all png in this directory, and dumps in ParametersRemoved
 
-
-from PIL import Image
+import PIL
+from PIL import Image 
 import os
 
 inputdir='.'
@@ -34,12 +34,11 @@ for eachfile in os.listdir(inputdir):
         outputfilename=os.path.join(outputdir,eachfile)
         if not (os.path.exists(outputfilename)):
             # print("It doesn't exist",outputfilename)
-            with Image.open(infilename) as img:
+            with PIL.Image.open(infilename) as img:
                 img.load()
                 img.info.pop("parameters")
                 img.save(outputfilename)
         else:
             print('File already processed',outputfilename)
     else:
-        # print ('invalid PNG',infilename)
-    
+        print ('invalid PNG',infilename)
