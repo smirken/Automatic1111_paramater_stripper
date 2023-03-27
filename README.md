@@ -8,4 +8,8 @@ Note this version is very basic, but better than nothing, and does what I need t
 You might need to install pyhon dependancies, just run
 $ pip install pillow
 
-If someone can explain how to run pyinstaller i'll create a bin, but right now I'm having trouble getting it to include pillow or PIL
+I've included a windows executable that you can just drop in your path.
+It was created with the following if you want to make your own (you'll have to install pyinstaller and Pillow)
+
+>pyinstaller.exe --onefile --hidden-import=Pillow -wcF .\PNG-view-rem-param.py
+
