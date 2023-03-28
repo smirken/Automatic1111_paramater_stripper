@@ -2,8 +2,7 @@
  
 # add args
 #current version, reads all png in this directory, and dumps in ParametersRemoved
-from dis import show_code
-import os
+import sys
 from pathlib import Path
 from PIL import Image, PngImagePlugin
 import argparse
@@ -32,7 +31,7 @@ elif args.remove:
 else:
     parser.print_help()
     print('No action specified, use one of -d -r or -a')
-    quit()
+    sys.exit()
 print ('mode',MODE)
 
 if MODE =='show':
@@ -56,7 +55,7 @@ if not MODE=='show':
         print('Input and output directory are the same')
         if args.force==False:
             print('use -f to force')
-            quit()
+            sys.exit()
 
 # Create output directory if it doesn't exist
     if not outputdir.exists() or not outputdir.is_dir():
@@ -97,6 +96,8 @@ for file in inputdir.glob("*.png"):
                         img.info.pop(args.parameter)
                         pngmetadata=""
                     elif MODE == 'add':
+                        print ('Add not implemented yet')
+                        sys.exit()
                         pngmetadata=PngImagePlugin.PngInfo(img)
                         pngmetadata.add_text(args.parameter, args.add)
                 except Exception as e:
