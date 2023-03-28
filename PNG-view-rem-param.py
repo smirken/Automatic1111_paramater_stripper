@@ -20,7 +20,7 @@ parser.add_argument('--show','--display','-s','-d',action ='store_true', help = 
 
 
 args =parser.parse_args()
-print(args)
+# print(args)
 # print (len(args.add), args.add)
 if args.show:
     MODE='show'
@@ -32,14 +32,15 @@ else:
     parser.print_help()
     print('No action specified, use one of -d -r or -a')
     sys.exit()
-print ('mode',MODE)
+print ('Operating Mode:',MODE)
 
-if MODE =='show':
-    print('runnign show')
-elif MODE =='add':
-    print('running add')
-elif MODE == 'remove':
-    print ('running remove')
+
+# if MODE =='show':
+#     print('Running show')
+# elif MODE =='add':
+#     print('running add')
+# elif MODE == 'remove':
+#     print ('running remove')
 
 inputdir = Path(args.inputdir)
 # Check if input directory exists, otherwise exit
@@ -84,7 +85,7 @@ for file in inputdir.glob("*.png"):
         with Image.open(file) as img:
             # Remove the "parameters" attribute from the PNG file
             if MODE =='show':
-                print ('File: {file.name}' )
+                print (f'File: {file.name}' )
                 print(f"\t{img.info}")
                 # chunks=list(img.info.get('png',{}).keys())
                 # print ('File: {file.name}' )
