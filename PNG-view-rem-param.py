@@ -5,7 +5,7 @@
 from dis import show_code
 import os
 from pathlib import Path
-from PIL import Image
+from PIL import Image, PngImagePlugin
 import argparse
 
 outputdirname="ParametersRemoved"
@@ -35,6 +35,12 @@ else:
     quit()
 print ('mode',MODE)
 
+if MODE =='show':
+    print('runnign show')
+elif MODE =='add':
+    print('running add')
+elif MODE == 'remove':
+    print ('running remove')
 
 inputdir = Path(args.inputdir)
 # Check if input directory exists, otherwise exit
@@ -64,22 +70,38 @@ for file in inputdir.glob("*.png"):
         # Skip if it's not a file
         continue
 
-    # Generate the output file path
-    outfile = outputdir / file.name
+    if not (MODE =='show'):
+        print ('not MODE show')
+        # Generate the output file path
+        outfile = outputdir / file.name
 
-    if outfile.exists():
-        # Skip if output file already exists
-        print(f"File already processed: {outfile}")
-        continue
+        if not args.force:
+            if outfile.exists():
+                # Skip if output file already exists
+                print(f"File exists -f to overwrite: {outfile}")
+                continue
 
     try:
         with Image.open(file) as img:
             # Remove the "parameters" attribute from the PNG file
-            try:
-                img.info.pop("parameters")
-            except Exception as e:
-                print(f"Failed to pop parameters, was this already done? {e}")
-            img.save(outfile)
-            print(f"Processed file: {file} -> {outfile}")
+            if MODE =='show':
+                print ('File: {file.name}' )
+                print(f"\t{img.info}")
+                # chunks=list(img.info.get('png',{}).keys())
+                # print ('File: {file.name}' )
+                # for chunk in chunks:
+                #     print(f"\t{chunk}")
+            else:
+                try:
+                    if MODE == 'remove':
+                        img.info.pop(args.parameter)
+                        pngmetadata=""
+                    elif MODE == 'add':
+                        pngmetadata=PngImagePlugin.PngInfo(img)
+                        pngmetadata.add_text(args.parameter, args.add)
+                except Exception as e:
+                    print(f"Failed to modify parameters, was this already done? {e}")
+                img.save(outfile,pnginfo=pngmetadata)
+                print(f"Processed file: {file} -> {outfile}")
     except Exception as e:
         print(f"Failed to process file: {file} -> {e}")
